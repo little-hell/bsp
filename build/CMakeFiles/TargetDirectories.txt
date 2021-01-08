@@ -1,5 +1,0 @@
-/home/ranguli/Projects/bsp/bsp-5.2/build/CMakeFiles/rebuild_cache.dir
-/home/ranguli/Projects/bsp/bsp-5.2/build/CMakeFiles/edit_cache.dir
-/home/ranguli/Projects/bsp/bsp-5.2/build/src/CMakeFiles/rebuild_cache.dir
-/home/ranguli/Projects/bsp/bsp-5.2/build/src/CMakeFiles/edit_cache.dir
-/home/ranguli/Projects/bsp/bsp-5.2/build/src/CMakeFiles/bsp.dir

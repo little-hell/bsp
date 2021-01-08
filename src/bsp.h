@@ -9,18 +9,6 @@
 #include <limits.h>
 #include <assert.h>
 
-#if defined(MSDOS) || defined(__MSDOS__)
-#include <dos.h>
-#endif
-#ifdef __TURBOC__
-#include <alloc.h>
-#endif
-
-/* cph - from FreeBSD math.h: */
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 /*- boolean constants ------------------------------------------------------*/
 
 #define TRUE			1
@@ -113,14 +101,3 @@ struct Seg *PickNode_visplane(struct Seg *, const bbox_t bbox);
 extern struct Seg *(*PickNode)(struct Seg *, const bbox_t bbox);
 int DoLinesIntersect(void);
 void ComputeIntersection(short int *outx,short int *outy);
-
-/* malloc edbugging with dmalloc */
-#ifdef WITH_DMALLOC
-#include <dmalloc.h>
-
-#define GetMemory malloc
-#define ResizeMemory realloc
-
-#endif
-
-/*------------------------------- end of file ------------------------------*/

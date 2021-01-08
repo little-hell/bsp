@@ -27,16 +27,10 @@
 #include "structs.h"
 #include "bsp.h"
 
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
+#include <unistd.h>
 
 #include <errno.h>
 #include <fcntl.h>
-
-#ifndef O_BINARY
-# define O_BINARY 0
-#endif
 
 /*- Global Vars ------------------------------------------------------------*/
 
@@ -93,14 +87,13 @@ static int OpenWadFile(char *filename)
  if (!(infile = fopen(filename,"rb")))
    ProgError("Error: Cannot open WAD file %s", filename);
 
-#if defined(HAVE_TMPFILE)
  if (fseek(infile,0,SEEK_SET) == -1) {
    FILE* intmp;
    if (errno != ESPIPE) {
      perror("fseek"); exit(errno);
    }
    if (!(intmp = tmpfile())) {
-     perror("tmpfile"); 
+     perror("tmpfile");
      ProgError("Input was not seekable and failed to create temp file");
    }
    Verbose("Copying piped input to temporary file\n");
@@ -108,7 +101,6 @@ static int OpenWadFile(char *filename)
    fclose(infile);
    rewind(infile = intmp);
  }
-#endif
 
  if (fread(&wad,1,sizeof(wad),infile)!=sizeof(wad) ||
      (wad.type[0]!='I' && wad.type[0]!='P') || wad.type[1]!='W'
@@ -300,9 +292,9 @@ static void sortlump(struct lumplist **link)
 
 void usage(const char* path) __attribute__((noreturn));
 
-void usage(const char* path) 
+void usage(const char* path)
 {
- printf("\nBSP v" VERSION "\n"
+ printf("\nBSP v" PACKAGE_VERSION "\n"
         "\nSee the file AUTHORS for a complete list of credits and contributors\n"
         "\nUsage: bsp [options] input.wad [[-o] <output.wad>]\n"
         "       (If no output.wad is specified, tmp.wad is written)\n\n"
@@ -431,23 +423,15 @@ int main(int argc,char *argv[])
 
  parse_options(argc,argv);
 
- verbosity = quiet ? 0 : 
-#ifdef HAVE_ISATTY
-	isatty(STDOUT_FILENO) ? 2 : 1
-#else
-	2
-#endif
-	;
+ verbosity = quiet ? 0 :
+	isatty(STDOUT_FILENO) ? 2 : 1;
 
- /* Don't buffer output to stdout, people want to see the progress 
+ /* Don't buffer output to stdout, people want to see the progress
   * as it happens */
-#ifdef HAVE_ISATTY
- if (isatty(STDOUT_FILENO))
-#endif
-   setbuf(stdout,NULL);
+ setbuf(stdout,NULL);
 
  if (verbosity)
-  Verbose("* Doom BSP node builder ver " VERSION "\n"
+  Verbose("* Doom BSP node builder ver " PACKAGE_VERSION "\n"
 	"Copyright (c)	1998 Colin Reed, Lee Killough\n"
 	"		2001 Simon Howard\n"
 	"		2000,2001,2002,2006 Colin Phipps <cph@moria.org.uk>\n\n");
@@ -463,13 +447,11 @@ int main(int argc,char *argv[])
   }
 
  {
-   int fd = open(outwad,O_WRONLY | O_CREAT | O_EXCL | O_BINARY,0644);
+   int fd = open(outwad,O_WRONLY | O_CREAT | O_EXCL, 0644);
    outfile = NULL;
    if (fd == -1 && (errno == EEXIST || errno == -1)) {
-#ifdef HAVE_TMPFILE
      outfile = tmpfile();
      using_temporary_output = 1;
-#endif
    } else if (fd != -1) {
      outfile = fdopen(fd,"wb");
      unlinkwad = outwad;
